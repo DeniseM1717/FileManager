@@ -157,7 +157,7 @@ class App extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			AboutDlg dlg = new AboutDlg();
+			AbtDlg dlg = new AbtDlg(null, true);
 			dlg.setVisible(true);
 		}
 	}
