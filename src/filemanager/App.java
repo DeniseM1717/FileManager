@@ -98,11 +98,10 @@ class App extends JFrame {
     
     //build toolbar
     private void buildtoolbar(){
+        //creates list of files to put into the combobox
         File file = new File("/Users/denisemartinez/Desktop");
 	File[] files;
 	files = file.listFiles();
-        
-        String[] drives = { "/"};
         //buttons details and simple
         JButton details;
         JButton simple;
@@ -152,6 +151,7 @@ class App extends JFrame {
 		run.addActionListener(new RunActionListener() );
 		exit.addActionListener( new ExitActionListener() );
 		about.addActionListener( new AboutActionListener() );
+                help.addActionListener( new HelpActionListener() );
 		
                 //additing items to filemenu
                 fileMenu.add(rename);
@@ -181,6 +181,14 @@ class App extends JFrame {
 		//adding menubar to JPanel on the north side
 		panel.add(menubar, BorderLayout.NORTH);
 	}
+
+    private class HelpActionListener implements ActionListener {
+        @Override
+	public void actionPerformed(ActionEvent e) {
+            HelpDlg dlg = new HelpDlg(null, true);
+            dlg.setVisible(true);
+	}
+    }
         
         
 
