@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ *  To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -9,7 +9,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,8 +26,9 @@ import javax.swing.JToolBar;
  * @author denisemartinez
  */
 class App extends JFrame {
-    JPanel panel, topPanel;
+    JPanel panel, topPanel, toolbar;
     JMenuBar menubar, statusbar;
+    //JToolBar toolbar;
     //JToolBar toolbar,drivebar, statusbar;
     JDesktopPane desktop;
     FileFrame fileFrame;
@@ -39,32 +42,47 @@ class App extends JFrame {
         menubar = new JMenuBar();
         desktop = new JDesktopPane();
         statusbar = new JMenuBar();
+        toolbar = new JPanel();
 
-
-        //toolbar = new JToolBar();
+        currentDrive = "C:";
         //drivebar = new JToolBar();
         fileFrame = new FileFrame();
         }
     
     public void go(){
+        //setting title to whole project frame
         this.setTitle("CECS 277 File Manager");
-        panel.setLayout(new BorderLayout());
-        topPanel.setLayout(new BorderLayout());
-        buildMenu();
-        buildStatusBar();
-        //setContentPane(desktop);
-        topPanel.add(menubar, BorderLayout.NORTH);
-        panel.add(topPanel, BorderLayout.NORTH);
-        this.add(panel);
-        fileFrame.setVisible(true);
-        desktop.add(fileFrame);
         
+        //setting main panel
+        panel.setLayout(new BorderLayout());
+        
+        //setting layout of the topPanel (includes the menu bar and the tool bar)
+        topPanel.setLayout(new BorderLayout());
+        //builds the menu and tool bar (both go into topPanel
+        buildMenu();
+        buildtoolbar();
+        //builds statusbar which goes at bottom of main panel
+        buildStatusBar();
+        
+        //setContentPane(desktop); idk what this does
+        
+        //adding menubar to top of topPanel
+        topPanel.add(menubar, BorderLayout.NORTH);
+        //adding topPanel to top of main panel
+        panel.add(topPanel, BorderLayout.NORTH);
+        //adding main panel to the main frame
+        this.add(panel);
+        
+        //setting visibility of secondary frame true
+        fileFrame.setVisible(true);
+        //adding the fileFrame to the desktoppane
+        desktop.add(fileFrame);
+        //changing default blue color of desktop pane to white
         desktop.setBackground(Color.WHITE);
+        //adding desktop pane to main panel
         panel.add(desktop, BorderLayout.CENTER);
-        //buildtoolbar();
-        //topPanel.add(toolbar, BorderLayout.SOUTH);
-        currentDrive = "C:";
-        //panel.add(statusbar, BorderLayout.SOUTH);
+        
+        //setting size of main JFrame and setting visibility to true
         this.setSize(1000, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -76,6 +94,31 @@ class App extends JFrame {
         JLabel drive = new JLabel("Current Drive: " + "Free Space: " + "Used Space: " + "Total Space: ");
         statusbar.add(drive);
         panel.add(statusbar, BorderLayout.SOUTH );
+    }
+    
+    //build toolbar
+    private void buildtoolbar(){
+        File file = new File("/Users/denisemartinez/Desktop");
+	File[] files;
+	files = file.listFiles();
+        
+        String[] drives = { "/"};
+        //buttons details and simple
+        JButton details;
+        JButton simple;
+        JComboBox driveSelection;
+        driveSelection = new JComboBox(files);
+        details = new JButton("Details");
+        simple = new JButton("Simple");
+        //adding buttons to toolbar
+        toolbar.add(driveSelection);
+        toolbar.add(details);
+        toolbar.add(simple);
+        
+        //adding toolbar to the bottom of the topPanel
+        topPanel.add(toolbar, BorderLayout.SOUTH);
+        
+        
     }
     //building menu
 	private void buildMenu() {
