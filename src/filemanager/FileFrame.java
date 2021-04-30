@@ -13,17 +13,21 @@ import javax.swing.JSplitPane;
  * @author denisemartinez
  */
 public class FileFrame extends JInternalFrame {
-    
+    //static String currentSelected;
     JSplitPane splitpane;
-    public FileFrame(){
-        splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, new DirPanel(), new FilePanel() );
+    FileFrame() { //App app
+        DirPanel dirpanel = new DirPanel();
+        FilePanel filepanel = new FilePanel();
+        dirpanel.setFilePanel(filepanel);
         
+        splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, dirpanel, filepanel );
+
         this.setTitle("C:");
         this.getContentPane().add(splitpane);
         this.setClosable(true);
         this.setMaximizable(true);
         this.setIconifiable(true);
-        this.setSize(700, 500);
+        this.setSize(800, 800);
         this.setVisible(true);
     }
 }
