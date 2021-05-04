@@ -5,6 +5,7 @@
  */
 package filemanager;
 
+import java.awt.Desktop;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -17,10 +18,17 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.GroupLayout;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 
 /**
@@ -34,20 +42,39 @@ public class FilePanel extends JPanel {
     
     JList list = new JList();
     DefaultListModel model = new DefaultListModel();
+    private JScrollPane scrollpane = new JScrollPane();
+    HashMap<String, File> fileToName = new HashMap<String, File>();
+
+
     
     public FilePanel(){
-        //scrollpane.setViewportView(filetree);
-        //add(scrollpane);
-        
-        list.setPreferredSize(new Dimension(500,500));
+        list.setPreferredSize(new Dimension(1000,500000));
         this.setDropTarget(new MyDropTarget());
         list.setDragEnabled(true);
 
         list.setModel(model);
+        list.addListSelectionListener(new listSelctionListener() );
+        
         add(list);
+        scrollpane.setViewportView(list);
+        GroupLayout layout = new GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(scrollpane, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(scrollpane, GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+        );
+        scrollpane.createVerticalScrollBar();
+        add(scrollpane);
+
+
     }
 
     public void fillList(File dir) {
+        fileToName.clear();
         File[] files;
         
         files = dir.listFiles();
@@ -55,11 +82,35 @@ public class FilePanel extends JPanel {
         list.removeAll();
         for( int i = 0; i < files.length; i++){
             if( !files[i].isHidden()){
-                if(files[i].isDirectory())
-                model.addElement(files[i].getAbsolutePath());
+                if(files[i].isFile()){
+                    fileToName.put(files[i].getName(), files[i]);
+                    model.addElement(files[i].getName());
+                }
             }
         }
         list.setModel(model);
+    }
+
+    private class listSelctionListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+           
+               Desktop desktop = Desktop.getDesktop();
+               String filename = list.getSelectedValue().toString();
+               
+               File file = fileToName.get(filename);
+            try {
+                desktop.open( new File ( file.getAbsolutePath()));
+            } catch (IOException ex) {
+                System.out.println("Can't open file.");
+                //Logger.getLogger(FilePanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+               
+            
+        }
+
+
     }
     /*************************************************************************
      * class MyDropTarget handles the dropping of files onto its owner

@@ -38,6 +38,8 @@ class App extends JFrame {
     FileFrame fileFrame;
     //JButton simple, details;
     String currentDrive;
+    JComboBox driveSelection;
+
     
     public App(){
         
@@ -66,7 +68,7 @@ class App extends JFrame {
         buildMenu();
         buildtoolbar();
         //builds statusbar which goes at bottom of main panel
-        buildStatusBar();
+        buildStatusBar("/");
         
         //setContentPane(desktop); idk what this does
         
@@ -77,6 +79,7 @@ class App extends JFrame {
         
         //setting visibility of secondary frame true
         fileFrame.setVisible(true);
+        
         //adding the fileFrame to the desktoppane
         desktop.add(fileFrame);
         //changing default blue color of desktop pane to white
@@ -92,9 +95,19 @@ class App extends JFrame {
     }
     
     //build status bar
-    private void buildStatusBar(){
-        JLabel drive = new JLabel("Current Drive: " + "Free Space: " + "Used Space: " + "Total Space: ");
-        statusbar.add(drive);
+    private void buildStatusBar( String currentDrive){
+        statusbar.removeAll();
+        File file = new File(currentDrive);
+        //1024 is used to convert to GB
+        int freeSpace = (int) (file.getUsableSpace()/(1024 * 1024 * 1024));
+        int totalSpace = (int) (file.getTotalSpace()/(1024 * 1024 * 1024));
+        int usedSpace = totalSpace - freeSpace;
+        
+        JLabel statusBarInfo = new JLabel("Current Drive: " + 
+                currentDrive + " Free Space: " + freeSpace + "GB" 
+                        + " Used Space: " + usedSpace + "GB" 
+                                + " Total Space: " + totalSpace + "GB");
+        statusbar.add(statusBarInfo);
         panel.add(statusbar, BorderLayout.SOUTH );
     }
     
@@ -124,7 +137,6 @@ class App extends JFrame {
         //buttons details and simple
         JButton details;
         JButton simple;
-        JComboBox driveSelection;
         driveSelection = new JComboBox(paths);
         details = new JButton("Details");
         simple = new JButton("Simple");
@@ -265,9 +277,18 @@ class App extends JFrame {
             }
             else {
 		System.out.println("Debugging the program");
-            }
-			
+            }		
 	}
+    }
+    
+    public class toolbarBoxAction implements ActionListener{  
+        @Override
+        public void actionPerformed(ActionEvent e){
+            String s = (String) driveSelection.getSelectedItem();
+            System.out.println("you selected " + s);
+            buildStatusBar(s);
+            panel.revalidate();
+        }
     }
 }
     

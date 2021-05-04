@@ -37,7 +37,7 @@ public class AbtDlg extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 25)); // NOI18N
         jLabel1.setText("CECS 277 File Manager");
 
-        jLabel2.setText("copyright (c) 2021 Denise Martinez, Purnima Jain");
+        jLabel2.setText("copyright (c) 2021 Denise Martinez");
 
         OkButton.setText("Okay");
         OkButton.addActionListener(new java.awt.event.ActionListener() {
@@ -56,7 +56,7 @@ public class AbtDlg extends javax.swing.JDialog {
                     .addComponent(OkButton)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -69,6 +69,8 @@ public class AbtDlg extends javax.swing.JDialog {
                 .addComponent(OkButton)
                 .addContainerGap(44, Short.MAX_VALUE))
         );
+
+        jLabel2.getAccessibleContext().setAccessibleName("copyright (c) 2021 Denise Martinez");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
