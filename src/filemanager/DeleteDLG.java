@@ -9,14 +9,15 @@ package filemanager;
  *
  * @author denisemartinez
  */
-public class AbtDlg extends javax.swing.JDialog {
-
+public class DeleteDLG extends javax.swing.JDialog {
+    boolean delete;
     /**
-     * Creates new form AbtDlg
+     * Creates new form DeleteDLG
      */
-    public AbtDlg(java.awt.Frame parent, boolean modal) {
+    public DeleteDLG(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
     }
 
     /**
@@ -29,21 +30,26 @@ public class AbtDlg extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        OkButton = new javax.swing.JButton();
+        YesButton = new javax.swing.JButton();
+        NoButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("About");
+        setTitle("Deleting!!!");
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 25)); // NOI18N
-        jLabel1.setText("CECS 277 File Manager");
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        jLabel1.setText("Are you sure you want to delete this file?");
 
-        jLabel2.setText("copyright (c) 2021 Denise Martinez");
-
-        OkButton.setText("Okay");
-        OkButton.addActionListener(new java.awt.event.ActionListener() {
+        YesButton.setText("Yes");
+        YesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OkButtonActionPerformed(evt);
+                YesButtonActionPerformed(evt);
+            }
+        });
+
+        NoButton.setText("No");
+        NoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NoButtonActionPerformed(evt);
             }
         });
 
@@ -52,31 +58,40 @@ public class AbtDlg extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(OkButton)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addGap(97, 97, 97)
+                .addComponent(YesButton)
+                .addGap(37, 37, 37)
+                .addComponent(NoButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(52, 52, 52)
+                .addGap(75, 75, 75)
                 .addComponent(jLabel1)
-                .addGap(54, 54, 54)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42)
-                .addComponent(OkButton)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(YesButton)
+                    .addComponent(NoButton))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void OkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OkButtonActionPerformed
+    private void YesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_YesButtonActionPerformed
+        delete = true;
         setVisible(false);
-    }//GEN-LAST:event_OkButtonActionPerformed
+    }//GEN-LAST:event_YesButtonActionPerformed
+
+    private void NoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NoButtonActionPerformed
+        delete = false;
+        setVisible(false);
+    }//GEN-LAST:event_NoButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -95,20 +110,20 @@ public class AbtDlg extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AbtDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteDLG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AbtDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteDLG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AbtDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteDLG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AbtDlg.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteDLG.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AbtDlg dialog = new AbtDlg(new javax.swing.JFrame(), true);
+                DeleteDLG dialog = new DeleteDLG(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -121,8 +136,8 @@ public class AbtDlg extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton OkButton;
+    private javax.swing.JButton NoButton;
+    private javax.swing.JButton YesButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }

@@ -7,12 +7,16 @@ package filemanager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -24,6 +28,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -69,9 +75,7 @@ class App extends JFrame {
         buildtoolbar();
         //builds statusbar which goes at bottom of main panel
         buildStatusBar("/");
-        
-        //setContentPane(desktop); idk what this does
-        
+                
         //adding topPanel to top of main panel
         panel.add(topPanel, BorderLayout.NORTH);
         //adding main panel to the main frame
@@ -140,6 +144,9 @@ class App extends JFrame {
         driveSelection = new JComboBox(paths);
         details = new JButton("Details");
         simple = new JButton("Simple");
+        
+        details.addActionListener(new DetailsSimpleActionListener() );
+        simple.addActionListener( new DetailsSimpleActionListener() );
         //adding buttons to toolbar
         toolbar.add(driveSelection);
         toolbar.add(details);
@@ -184,6 +191,12 @@ class App extends JFrame {
         help.addActionListener( new HelpActionListener() );
         newWindow.addActionListener(new NewActionListener() );
         cascade.addActionListener(new cascadeActionListener() );
+        expand.addActionListener(new ExpandCollapseListener() );
+        collapse.addActionListener(new ExpandCollapseListener() );
+        run.addActionListener( new RunActionListener()  );
+        copy.addActionListener( new CopyActionListener() );
+        delete.addActionListener(new DeleteActionListener() );
+        rename.addActionListener( new RenameActionListener() );
 
         //additing items to filemenu
         fileMenu.add(rename);
@@ -212,6 +225,108 @@ class App extends JFrame {
                 
 	//adding menubar to top of topPanel
         topPanel.add(menubar, BorderLayout.NORTH);
+    }
+
+    private class CopyActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println( "You copied a file.");
+            FileFrame active = (FileFrame) desktop.getSelectedFrame();
+            DataBack dbdlg = new DataBack(null, true);
+            int indexFile = active.filepanel.list.getSelectedIndex();
+            File file = active.filepanel.filesArray.get(indexFile);
+            dbdlg.setFromField(file.getParent());
+            dbdlg.setTitle("Copy");
+            dbdlg.setVisible(true);
+            //String filedir = file.getParent();
+            String tofield = dbdlg.getToField();
+            
+            //System.out.println("ToField is " + filedir);
+        }
+
+    }
+
+    private class RenameActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            FileFrame active = (FileFrame) desktop.getSelectedFrame();
+            DataBack dbdlg = new DataBack(null, true);
+            int indexFile = active.filepanel.list.getSelectedIndex();
+            File file = active.filepanel.filesArray.get(indexFile);
+            dbdlg.setFromField(file.getName());
+            dbdlg.setTitle("Rename");
+            dbdlg.setVisible(true);
+            String tofield = dbdlg.getToField();
+            
+            if( active.filepanel.details ){
+                long lsize = file.length();
+                DecimalFormat dformat = new DecimalFormat("#,###");
+                String size = dformat.format(lsize);
+                        
+                Date lastModified = new Date(file.lastModified());
+                String fileName = dbdlg.getToField(); 
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                String date = formatter.format(lastModified);
+                String detailedFile = fileName + "     Date Modified: "+date +"    " +"Size: "+size;
+                active.filepanel.model.setElementAt(detailedFile, indexFile);
+                        
+            }
+            else{
+                active.filepanel.model.setElementAt(tofield, indexFile);
+                System.out.println("ToField is " + tofield);
+
+            }
+        }
+    }
+
+    private class DetailsSimpleActionListener implements ActionListener {
+        @Override
+            public void actionPerformed(ActionEvent e){
+                String event = e.getActionCommand();
+                FileFrame active = (FileFrame) desktop.getSelectedFrame();
+                if(active == null){
+                    return;
+                }
+                if(event.equals("Details")){
+                      System.out.println("You pressed details.");
+                      active.filepanel.details = true;
+                      DefaultMutableTreeNode node = (DefaultMutableTreeNode)  active.dirpanel.getDirTree().getLastSelectedPathComponent();
+                      MyFileNode nfn = (MyFileNode) node.getUserObject();
+                      active.filepanel.fillList(nfn.getFile());
+                    }
+                
+                if(event.equals("Simple")){
+                      System.out.println("You pressed simple.");
+                      active.filepanel.details = false;
+                      DefaultMutableTreeNode node = (DefaultMutableTreeNode)  active.dirpanel.getDirTree().getLastSelectedPathComponent();
+                      MyFileNode nfn = (MyFileNode) node.getUserObject();
+                      active.filepanel.fillList(nfn.getFile());
+                    }
+                }
+            }
+
+
+    
+
+    public class DeleteActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            FileFrame active = (FileFrame) desktop.getSelectedFrame();
+            DeleteDLG deleteDialog = new DeleteDLG(null, true);
+            deleteDialog.setVisible(true);
+            if (deleteDialog.delete){
+                if ( active.filepanel.list != null){
+                    //File filename = (File) active.filepanel.list.getSelectedValue();
+                    int indexFile = active.filepanel.list.getSelectedIndex();
+                    active.filepanel.filesArray.remove(indexFile);
+                    active.filepanel.model.removeElement(active.filepanel.list.getSelectedValue());
+                }
+            }   
+        }       
     }
 
     private class cascadeActionListener implements ActionListener {
@@ -272,14 +387,23 @@ class App extends JFrame {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-            if ( e.getActionCommand().equals("Run") ) {
-		System.out.println("Running the program");
+            FileFrame active = (FileFrame) desktop.getSelectedFrame();
+            //FileFrame active = fileFrame;
+            if ( active.filepanel.list != null){
+                String filename = active.filepanel.list.getSelectedValue().toString();
+                int indexFile = active.filepanel.list.getSelectedIndex();
+                File file = active.filepanel.filesArray.get(indexFile);
+            try {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open( new File ( file.getAbsolutePath()));
+            } catch (IOException ex) {
+                System.out.println("Can't open file.");
+                //Logger.getLogger(FilePanel.class.getName()).log(Level.SEVERE, null, ex);
+            }  
             }
-            else {
-		System.out.println("Debugging the program");
-            }		
 	}
     }
+ 
     
     public class toolbarBoxAction implements ActionListener{  
         @Override
@@ -288,6 +412,22 @@ class App extends JFrame {
             System.out.println("you selected " + s);
             buildStatusBar(s);
             panel.revalidate();
+        }
+    }
+    
+     public class ExpandCollapseListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            FileFrame active = (FileFrame) desktop.getSelectedFrame();
+            if(active ==null){
+                return;
+            }
+            JTree temp = active.dirpanel.getDirTree();
+            int row = temp.getMinSelectionRow();
+            if (e.getActionCommand().equals("Expand")&& temp.isCollapsed(row))
+                temp.expandRow(row);
+            if (e.getActionCommand().equals("Collapse")&& temp.isExpanded(row))
+                temp.collapseRow(row);
         }
     }
 }

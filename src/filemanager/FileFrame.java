@@ -14,15 +14,14 @@ import javax.swing.JSplitPane;
  */
 public class FileFrame extends JInternalFrame {
     //static String currentSelected;
+    DirPanel dirpanel;
+    FilePanel filepanel;
+    
     JSplitPane splitpane;
     FileFrame() { //App app
-        
-
-        DirPanel dirpanel = new DirPanel();
-        FilePanel filepanel = new FilePanel();
+        dirpanel = new DirPanel();
+        filepanel = new FilePanel();
         dirpanel.setFilePanel(filepanel);
-        
-        
         splitpane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, dirpanel, filepanel );
         splitpane.setOneTouchExpandable(true);
         splitpane.setResizeWeight(.3);

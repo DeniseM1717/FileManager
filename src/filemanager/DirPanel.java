@@ -24,7 +24,7 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class DirPanel extends JPanel {
     private JScrollPane scrollpane = new JScrollPane();
-    private JTree dirtree = new JTree();
+    private JTree dirtree;
     private FilePanel filepanel;
     DefaultTreeModel treemodel;
 
@@ -32,11 +32,15 @@ public class DirPanel extends JPanel {
     File[] ACTIONfilteredDirs;
     
     
+    public JTree getDirTree(){
+        return dirtree;
+    }
     public void setFilePanel( FilePanel fp){
         filepanel = fp;
     }
     
-    public DirPanel(){        
+    public DirPanel(){
+        dirtree = new JTree();
         dirtree.setPreferredSize(new Dimension(1000,500000));             
         dirtree.addTreeSelectionListener(new treeSelectionListener());
         loadTree("/");
