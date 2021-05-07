@@ -7,7 +7,6 @@ package filemanager;
 
 import java.awt.Dimension;
 import java.io.File;
-import java.io.FileFilter;
 import javax.swing.GroupLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,8 +27,8 @@ public class DirPanel extends JPanel {
     private FilePanel filepanel;
     DefaultTreeModel treemodel;
 
-    File[] ACTIONdirs;
-    File[] ACTIONfilteredDirs;
+    File[] dirFiles;
+    File[] filterDirFiles;
     
     
     public JTree getDirTree(){
@@ -89,122 +88,36 @@ public class DirPanel extends JPanel {
         dirtree.setModel(model);
     }
     
-    public void  createChildren( DefaultMutableTreeNode node){
-        MyFileNode parentNode = (MyFileNode) node.getUserObject();
-        File parentFile = new File( parentNode.getFile().getPath() );
-        File[] parentList = parentFile.listFiles();
-        
-        if( parentList != null ){
-            for( File file : parentList ){
-                if( file.isDirectory() && file.listFiles() != null ){
-                    DefaultMutableTreeNode childNode = new DefaultMutableTreeNode( new MyFileNode(file.getPath()));
-                    node.add(childNode);
-                    File childFile = new File( file.getPath());
-                    File[] childList = childFile.listFiles();
-                    if( childList != null ){
-                        for( File file2 : childList ){
-                            if( file2.isDirectory() ){
-                                DefaultMutableTreeNode secondChildNode = new DefaultMutableTreeNode( 
-                                        new MyFileNode( file2.getPath()));
-                                childNode.add(secondChildNode);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-    }
-    
-    
-    class MyTreeSelectionListener implements TreeSelectionListener {
-
-        @Override
-        public void valueChanged(TreeSelectionEvent e) {
-            
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) dirtree.getLastSelectedPathComponent();
-            MyFileNode mfn = (MyFileNode) node.getUserObject();
-            createChildren(node);
-            System.out.println(node.toString());
-            System.out.println("this is path"+mfn.getFile().listFiles());
-//            if(node.toString().equals("food")){
-//                filepanel.fillList(new File("/Users/denisemartinez/Desktop"));
-//            }
-//            if(node.toString().equals("sports")){
-//                filepanel.fillList(new File("/Users/denisemartinez/Desktop/CECS328"));
-//            }
-        }  
-    }
-    
-    
+   
     class treeSelectionListener implements TreeSelectionListener{
 
         @Override
         public void valueChanged(TreeSelectionEvent e) {
             
-            System.out.println("owo");
-            System.out.println(dirtree.getMinSelectionRow());
-            System.out.println(dirtree.getSelectionPath());//C:\\Node2\\SubNode0
+            System.out.println(dirtree.getSelectionPath());
             DefaultMutableTreeNode Emptynode = null; 
-
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)  dirtree.getLastSelectedPathComponent();
-            
-            
-            //PLEASE UNCOMENT THIS
             MyFileNode nfn = (MyFileNode) node.getUserObject();
-            
             filepanel.fillList(nfn.getFile());
-            
-            ACTIONdirs = nfn.getFile().listFiles();
+            dirFiles = nfn.getFile().listFiles();
             System.out.println(nfn.getFile().getAbsolutePath());
-            System.out.println(ACTIONdirs);
-            //JOptionPane.showMessageDialog(scrollpane, nfn.getFile().getName());
-            
-            FileFilter directoryFilter = new FileFilter(){
-
-                @Override
-                public boolean accept(File file) {
-                    // TODO Auto-generated method stub
-                    return file.isDirectory();
-                }
-                    
-            };
-            
-            ACTIONfilteredDirs = nfn.getFile().listFiles();
+            System.out.println(dirFiles);            
             if(nfn.isDirectory()){
-                 
                 try{
-                    for(int k = 0; k <ACTIONdirs.length; k++){
-                    if(ACTIONdirs[k].isDirectory()){
-                        MyFileNode aNewFileNode = new MyFileNode(ACTIONdirs[k].getName(),ACTIONdirs[k]);
-
+                    for(int k = 0; k <dirFiles.length; k++){
+                    if(dirFiles[k].isDirectory()){
+                        MyFileNode aNewFileNode = new MyFileNode(dirFiles[k].getName(),dirFiles[k]);
                         Emptynode = new DefaultMutableTreeNode(aNewFileNode);
                         node.add(Emptynode);
-
                     }
-//                    MyFileNode aNewFileNode = new MyFileNode(ACTIONdirs[k].getName(),ACTIONdirs[k]);
-//
-//                    Emptynode = new DefaultMutableTreeNode(aNewFileNode);
-//                    node.add(Emptynode);
-  
-                
                 }
             }
             catch(Exception exc){
                 System.out.println("Permisions needed to open this file");
                 JOptionPane.showMessageDialog(scrollpane,exc +" \nFile Protected by System");
             }
-
             }
-
-
             System.out.println(node);
-            //File file = new File("D:");
-
-            //file.getAbsolutePath();//returns a string
         }
-
-
     }
-
 }

@@ -38,11 +38,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 class App extends JFrame {
     JPanel panel, topPanel, toolbar;
     JMenuBar menubar, statusbar;
-    //JToolBar toolbar;
-    //JToolBar toolbar,drivebar, statusbar;
     JDesktopPane desktop;
     FileFrame fileFrame;
-    //JButton simple, details;
     String currentDrive;
     JComboBox driveSelection;
 
@@ -57,7 +54,6 @@ class App extends JFrame {
         toolbar = new JPanel();
 
         currentDrive = "/";
-        //drivebar = new JToolBar();
         fileFrame = new FileFrame();
         }
     
@@ -239,10 +235,9 @@ class App extends JFrame {
             dbdlg.setFromField(file.getParent());
             dbdlg.setTitle("Copy");
             dbdlg.setVisible(true);
-            //String filedir = file.getParent();
             String tofield = dbdlg.getToField();
             
-            //System.out.println("ToField is " + filedir);
+            System.out.println("ToField is " + tofield);
         }
 
     }

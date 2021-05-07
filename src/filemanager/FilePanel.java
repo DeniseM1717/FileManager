@@ -66,10 +66,7 @@ public class FilePanel extends JPanel {
         list.setPreferredSize(new Dimension(1000,500000));
         this.setDropTarget(new MyDropTarget());
         list.setDragEnabled(true);
-
-        list.setModel(model);
-        //list.addListSelectionListener(new listSelctionListener() );
-        
+        list.setModel(model);        
         add(list);
         scrollpane.setViewportView(list);
         GroupLayout layout = new GroupLayout(this);
@@ -85,62 +82,44 @@ public class FilePanel extends JPanel {
         scrollpane.createVerticalScrollBar();
         add(scrollpane);
 
-            MouseListener mouseListener = new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1){
-
-                    String selectedFile = (String) list.getSelectedValue();
-                    System.out.println("SELECTED FILE IS NOW "+ selectedFile.toString());
-
-                    String[] splited = selectedFile.split("    ");
-                    System.out.println("MESSAGE FROM FILE PANEL! OUR SELECTED FILE IS " + splited[0] );
-                }
-                if (e.getClickCount() == 2) {
-    
-                    
-                   Desktop desktop = Desktop.getDesktop();
+        MouseListener mouseListener = new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 1){
+                String selectedFile = (String) list.getSelectedValue();
+                System.out.println("You selected "+ selectedFile.toString());
+                String[] splited = selectedFile.split("    ");
+                System.out.println("Selected file is (from filepanel) " + splited[0] );
+            }
+            if (e.getClickCount() == 2) {
+               Desktop desktop = Desktop.getDesktop();
                String listSelection = list.getSelectedValue().toString();
                int indexSelectedValue = list.getSelectedIndex();
                File file = filesArray.get(indexSelectedValue);
                System.out.println(listSelection);
                String filename = null;
-               
                System.out.println(filename);
-               //File file = fileToName.get(filename);
-            try {
-                desktop.open( new File ( file.getAbsolutePath()));
-            } catch (IOException ex) {
-                System.out.println("Can't open file.");
-                //Logger.getLogger(FilePanel.class.getName()).log(Level.SEVERE, null, ex);
+                try {
+                    desktop.open( new File ( file.getAbsolutePath()));
+                } catch (IOException ex) {
+                    System.out.println("Can't open file.");
             }  
-
-
-        
-                }
-                if (e.getButton() == MouseEvent.BUTTON3){
-
-                    popMenu ourPopMenu;
-
-                    try{
-
-                        ourPopMenu = new popMenu();
-                        ourPopMenu.show(e.getComponent(), e.getX(), e.getY());
-
-
-                    }
-                    catch (Exception ex){}
-
-                }
             }
+            if (e.getButton() == MouseEvent.BUTTON3){
+                popMenu popMenu;
+                try{
+                popMenu = new popMenu();
+                popMenu.show(e.getComponent(), e.getX(), e.getY());
+                    
+                } catch (Exception ex){}
+            }
+        }
         };
         list.addMouseListener(mouseListener);
 
     }
 
     public void fillList(File dir) {
-        //fileToName.clear();
         File[] files;
-        
         files = dir.listFiles();
         model.clear();
         list.removeAll();
@@ -165,11 +144,8 @@ public class FilePanel extends JPanel {
                         fileToName.put(fileName, files[i]);
                         model.addElement(fileName + "     Date Modified: "+date +"    " +"Size: "+size);
                         filesArray.add(files[i]);
-                        //fileToName.put(files[i].getName(), files[i]);
-                        //model.addElement(files[i].getName());
                     }
                     else{
-                        //fileToName.put(files[i].getName(), files[i]);
                         model.addElement(files[i].getName());
                         filesArray.add(files[i]);
                     }
@@ -189,8 +165,7 @@ public class FilePanel extends JPanel {
             dbdlg.setFromField(file.getName());
             dbdlg.setTitle("Rename");
             dbdlg.setVisible(true);
-            String tofield = dbdlg.getToField();
-            
+            String tofield = dbdlg.getToField();            
             if( details ){
                 long lsize = file.length();
                 DecimalFormat dformat = new DecimalFormat("#,###");
@@ -201,17 +176,13 @@ public class FilePanel extends JPanel {
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 String date = formatter.format(lastModified);
                 String detailedFile = fileName + "     Date Modified: "+date +"    " +"Size: "+size;
-                model.setElementAt(detailedFile, indexFile);
-                        
+                model.setElementAt(detailedFile, indexFile);                      
             }
             else{
                 model.setElementAt(tofield, indexFile);
                 System.out.println("ToField is " + tofield);
-
             }
-        }
-
-        
+        }        
     }
 
     private  class CopyActionListener implements ActionListener {
@@ -225,13 +196,8 @@ public class FilePanel extends JPanel {
             dbdlg.setFromField(file.getParent());
             dbdlg.setTitle("Copy");
             dbdlg.setVisible(true);
-            //String filedir = file.getParent();
             String tofield = dbdlg.getToField();
-            
-            //System.out.println("ToField is " + filedir);
-        }
-
-       
+        }  
     }
 
     private  class DeleteActionListener implements ActionListener {
@@ -242,49 +208,45 @@ public class FilePanel extends JPanel {
             deleteDialog.setVisible(true);
             if (deleteDialog.delete){
                 if ( list != null){
-                    //File filename = (File) active.filepanel.list.getSelectedValue();
                     int indexFile = list.getSelectedIndex();
                     filesArray.remove(indexFile);
                     model.removeElement(list.getSelectedValue());
-                    
                 }
             }
         } 
     }
 
-    private class listSelctionListener implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-           
-               Desktop desktop = Desktop.getDesktop();
-               String listSelection = list.getSelectedValue().toString();
-               int indexSelectedValue = list.getSelectedIndex();
-               File file = filesArray.get(indexSelectedValue);
-               System.out.println(listSelection);
-               String filename = null;
-               
-               System.out.println(filename);
-               //File file = fileToName.get(filename);
-            try {
-                desktop.open( new File ( file.getAbsolutePath()));
-            } catch (IOException ex) {
-                System.out.println("Can't open file.");
-                //Logger.getLogger(FilePanel.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-        }
-    }
+//DONT USE THIS
+//    private class listSelctionListener implements ListSelectionListener {
+//
+//        @Override
+//        public void valueChanged(ListSelectionEvent e) {
+//           
+//               Desktop desktop = Desktop.getDesktop();
+//               String listSelection = list.getSelectedValue().toString();
+//               int indexSelectedValue = list.getSelectedIndex();
+//               File file = filesArray.get(indexSelectedValue);
+//               System.out.println(listSelection);
+//               String filename = null;
+//               
+//               System.out.println(filename);
+//               //File file = fileToName.get(filename);
+//            try {
+//                desktop.open( new File ( file.getAbsolutePath()));
+//            } catch (IOException ex) {
+//                System.out.println("Can't open file.");
+//                //Logger.getLogger(FilePanel.class.getName()).log(Level.SEVERE, null, ex);
+//            }  
+//        }
+//    }
     
 
     private class popMenu extends JPopupMenu{
-
         JMenuItem rename  = new JMenuItem("Rename");
         JMenuItem copy  = new JMenuItem("Copy");
         JMenuItem paste = new JMenuItem("Paste");
         JMenuItem delete = new JMenuItem("Delete");
-
         public popMenu(){
-
             add(rename);
             add(copy);
             this.addSeparator();
@@ -292,11 +254,7 @@ public class FilePanel extends JPanel {
             delete.addActionListener( new DeleteActionListener() );
             copy.addActionListener( new CopyActionListener() );
             rename.addActionListener( new RenameActionListener() );
-
         }
-
-
-
     }
  
     /*************************************************************************
@@ -347,8 +305,6 @@ public class FilePanel extends JPanel {
             catch(Exception ex){
                 ex.printStackTrace();
             }
-        }
-        
+        }     
     }
-
 }
